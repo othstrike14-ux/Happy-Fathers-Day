@@ -55,25 +55,27 @@
             position: relative;
             width: 100%;
             max-width: 500px;
-            height: 350px;
+            height: 400px;
             margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             overflow: hidden;
             border-radius: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: rgba(0,0,0,0.15);
         }
         
         .slide {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
             position: absolute;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
             opacity: 0;
-            transition: opacity 1.5s;
+            transition: opacity 1s ease;
+            object-fit: contain;
         }
-
+        
         .slide.active {
             opacity: 1;
         }
@@ -108,18 +110,13 @@
             <img src="dad3.jpg" class="slide">
         </div>
 
-        <h2>Favorite Memories</h2>
+        <h2>A Message For You</h2>
 
         <div class="memory">
-            Teaching me _______
-        </div>
-
-        <div class="memory">
-            Going to _______
-        </div>
-
-        <div class="memory">
-            The time we _______
+            <p>
+                Write your full message here.  
+                You can make it emotional, funny, or simple.
+            </p>
         </div>
 
         <h2>Love, Your Name</h2>
@@ -127,23 +124,53 @@
 </div>
 
 <script>
-    const code = prompt("Enter the secret code:");
-
-    if (code === "BOSAA") {
-        document.getElementById("content").style.display = "block";
-    } else {
-        document.body.innerHTML =
-            "<h1 style='text-align:center;margin-top:100px;color:white;'>Access Denied</h1>";
-    }
-
-    let current = 0;
-    const slides = document.querySelectorAll(".slide");
-
-    setInterval(() => {
-        slides[current].classList.remove("active");
-        current = (current + 1) % slides.length;
-        slides[current].classList.add("active");
-    }, 4000);
+        const code = prompt("Enter the secret code:");
+        
+        if (code === "BOSAA") {
+            document.getElementById("content").style.display = "block";
+        } else {
+            document.body.innerHTML =
+                "<h1 style='text-align:center;margin-top:100px;color:white;'>Access Denied</h1>";
+        }
+        
+        // slideshow logic
+        let current = 0;
+        const slides = document.querySelectorAll(".slide");
+        
+        function showSlide(index) {
+            slides.forEach(s => s.classList.remove("active"));
+            slides[index].classList.add("active");
+        }
+        
+        setInterval(() => {
+            current = (current + 1) % slides.length;
+            showSlide(current);
+        }, 4000);
+        
+        // swipe support
+        let startX = 0;
+        
+        const slideshow = document.querySelector(".slideshow");
+        
+        slideshow.addEventListener("touchstart", (e) => {
+            startX = e.touches[0].clientX;
+        });
+        
+        slideshow.addEventListener("touchend", (e) => {
+            let endX = e.changedTouches[0].clientX;
+        
+            if (startX - endX > 50) {
+                // swipe left → next
+                current = (current + 1) % slides.length;
+                showSlide(current);
+            }
+        
+            if (endX - startX > 50) {
+                // swipe right → previous
+                current = (current - 1 + slides.length) % slides.length;
+                showSlide(current);
+            }
+        });
 </script>
 
 </body>
