@@ -20,6 +20,59 @@
             100% {background-position: 0% 50%;}
         }
 
+        /* INTRO SCREEN */
+        #intro {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.92);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .envelope {
+            width: 200px;
+            height: 120px;
+            background: white;
+            position: relative;
+            border-radius: 10px;
+            cursor: pointer;
+            animation: popIn 1s ease;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .flap {
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-left: 100px solid transparent;
+            border-right: 100px solid transparent;
+            border-bottom: 60px solid #e74c3c;
+            transform-origin: top;
+            transition: transform 0.6s ease;
+        }
+
+        .letter {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            color: black;
+            padding: 10px;
+        }
+
+        /* MAIN CONTENT */
+        #content {
+            display: none;
+        }
+
         .container {
             max-width: 800px;
             margin: 60px auto;
@@ -51,6 +104,7 @@
             margin-top: 40px;
         }
 
+        /* SLIDESHOW */
         .slideshow {
             position: relative;
             width: 100%;
@@ -64,7 +118,7 @@
             border-radius: 20px;
             background: rgba(0,0,0,0.15);
         }
-        
+
         .slide {
             max-width: 100%;
             max-height: 100%;
@@ -75,33 +129,42 @@
             transition: opacity 1s ease;
             object-fit: contain;
         }
-        
+
         .slide.active {
             opacity: 1;
         }
 
-        .memory {
+        .message {
             margin: 15px;
             padding: 15px;
             background: rgba(255,255,255,0.15);
             border-radius: 15px;
-        }
-
-        #content {
-            display: none;
+            min-height: 80px;
         }
     </style>
 </head>
 
 <body>
 
+<!-- ENVELOPE INTRO -->
+<div id="intro">
+    <div class="envelope">
+        <div class="flap"></div>
+        <div class="letter">
+            <h3>For Dad ❤️</h3>
+            <p>Tap to open</p>
+        </div>
+    </div>
+</div>
+
+<!-- MAIN CONTENT -->
 <div id="content">
     <div class="container">
+
         <h1>Happy Father's Day Dad ❤️</h1>
 
         <p>
             Thank you for everything you've done for me.
-            This little website is just a reminder of how much you mean to me.
         </p>
 
         <div class="slideshow">
@@ -112,64 +175,97 @@
 
         <h2>A Message For You</h2>
 
-        <div class="memory">
-            <p>
-                Happy Fathers Day! Thank you for everything that you've done for me, I hope you enjoy this website made to celebrate you.
-            </p>
+        <div class="message">
+            <p id="typed"></p>
         </div>
 
         <h2>Love, Othniel</h2>
+
     </div>
 </div>
 
 <script>
-        const code = prompt("Enter the secret code:");
-        
-        if (code === "BOSAA") {
+/* PASSWORD */
+const code = prompt("Enter the secret code:");
+
+if (code !== "BOSAA") {
+    document.body.innerHTML =
+        "<h1 style='text-align:center;margin-top:100px;color:white;'>Access Denied</h1>";
+}
+
+/* INTRO OPEN */
+const intro = document.getElementById("intro");
+const envelope = document.querySelector(".envelope");
+
+envelope.addEventListener("click", () => {
+    document.querySelector(".flap").style.transform = "rotateX(180deg)";
+
+    setTimeout(() => {
+        intro.style.opacity = "0";
+        intro.style.transition = "1s";
+
+        setTimeout(() => {
+            intro.style.display = "none";
             document.getElementById("content").style.display = "block";
-        } else {
-            document.body.innerHTML =
-                "<h1 style='text-align:center;margin-top:100px;color:white;'>Access Denied</h1>";
-        }
-        
-        // slideshow logic
-        let current = 0;
-        const slides = document.querySelectorAll(".slide");
-        
-        function showSlide(index) {
-            slides.forEach(s => s.classList.remove("active"));
-            slides[index].classList.add("active");
-        }
-        
-        setInterval(() => {
-            current = (current + 1) % slides.length;
-            showSlide(current);
-        }, 4000);
-        
-        // swipe support
-        let startX = 0;
-        
-        const slideshow = document.querySelector(".slideshow");
-        
-        slideshow.addEventListener("touchstart", (e) => {
-            startX = e.touches[0].clientX;
-        });
-        
-        slideshow.addEventListener("touchend", (e) => {
-            let endX = e.changedTouches[0].clientX;
-        
-            if (startX - endX > 50) {
-                // swipe left → next
-                current = (current + 1) % slides.length;
-                showSlide(current);
-            }
-        
-            if (endX - startX > 50) {
-                // swipe right → previous
-                current = (current - 1 + slides.length) % slides.length;
-                showSlide(current);
-            }
-        });
+        }, 1000);
+    }, 600);
+});
+
+/* SLIDESHOW */
+let current = 0;
+const slides = document.querySelectorAll(".slide");
+
+function showSlide(index) {
+    slides.forEach(s => s.classList.remove("active"));
+    slides[index].classList.add("active");
+}
+
+setInterval(() => {
+    current = (current + 1) % slides.length;
+    showSlide(current);
+}, 4000);
+
+/* SWIPE */
+let startX = 0;
+const slideshow = document.querySelector(".slideshow");
+
+slideshow.addEventListener("touchstart", (e) => {
+    startX = e.touches[0].clientX;
+});
+
+slideshow.addEventListener("touchend", (e) => {
+    let endX = e.changedTouches[0].clientX;
+
+    if (startX - endX > 50) {
+        current = (current + 1) % slides.length;
+        showSlide(current);
+    }
+
+    if (endX - startX > 50) {
+        current = (current - 1 + slides.length) % slides.length;
+        showSlide(current);
+    }
+});
+
+/* TYPING ANIMATION */
+const message = "Happy Father's Day! Thank you for everything you've done for me. I hope you enjoy this website made just for you ❤️";
+
+let i = 0;
+const typed = document.getElementById("typed");
+
+function typeWriter() {
+    if (i < message.length) {
+        typed.innerHTML += message.charAt(i);
+        i++;
+        setTimeout(typeWriter, 40);
+    }
+}
+
+/* start typing after intro */
+setTimeout(() => {
+    typeWriter();
+}, 2500);
+
 </script>
 
 </body>
