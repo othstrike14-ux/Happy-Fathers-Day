@@ -1,58 +1,146 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Happy Father's Day Dad</title>
+    <title>Happy Father's Day</title>
+
     <style>
         body {
+            margin: 0;
             font-family: Arial, sans-serif;
-            background: #f0f2f5;
-            text-align: center;
+            background: linear-gradient(-45deg, #1e3c72, #2a5298, #4b6cb7, #182848);
+            background-size: 400% 400%;
+            animation: gradient 12s ease infinite;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradient {
+            0% {background-position: 0% 50%;}
+            50% {background-position: 100% 50%;}
+            100% {background-position: 0% 50%;}
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 60px auto;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
             padding: 40px;
+            border-radius: 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeIn 1.5s forwards;
         }
 
-        .card {
-            max-width: 700px;
-            margin: auto;
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.15);
-        }
-
-        img {
-            width: 250px;
-            border-radius: 15px;
-            margin: 20px 0;
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         h1 {
-            color: #2c3e50;
+            font-size: 3rem;
+            margin-bottom: 10px;
         }
 
-        p {
-            font-size: 18px;
-            line-height: 1.5;
+        h2 {
+            margin-top: 40px;
+        }
+
+        .slideshow {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            height: 350px;
+            margin: auto;
+            overflow: hidden;
+            border-radius: 20px;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 1.5s;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .memory {
+            margin: 15px;
+            padding: 15px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 15px;
+        }
+
+        #content {
+            display: none;
         }
     </style>
 </head>
-<body>
-    <div class="card">
-        <h1>Happy Father's Day Dad!</h1>
 
-        <img src="dad.jpg" alt="Dad">
+<body>
+
+<div id="content">
+    <div class="container">
+        <h1>Happy Father's Day Dad ❤️</h1>
 
         <p>
             Thank you for everything you've done for me.
-            I appreciate your support, guidance, and all the memories we've made together.
+            This little website is just a reminder of how much you mean to me.
         </p>
 
-        <h2>Some of My Favorite Memories</h2>
+        <div class="slideshow">
+            <img src="dad.jpg" class="slide active">
+            <img src="dad2.jpg" class="slide">
+            <img src="dad3.jpg" class="slide">
+        </div>
 
-        <p>• Memory #1</p>
-        <p>• Memory #2</p>
-        <p>• Memory #3</p>
+        <h2>Favorite Memories</h2>
 
-        <h3>Love, [Your Name]</h3>
+        <div class="memory">
+            Teaching me _______
+        </div>
+
+        <div class="memory">
+            Going to _______
+        </div>
+
+        <div class="memory">
+            The time we _______
+        </div>
+
+        <h2>Love, Your Name</h2>
     </div>
+</div>
+
+<script>
+    const code = prompt("Enter the secret code:");
+
+    if (code === "BOSAA") {
+        document.getElementById("content").style.display = "block";
+    } else {
+        document.body.innerHTML =
+            "<h1 style='text-align:center;margin-top:100px;color:white;'>Access Denied</h1>";
+    }
+
+    let current = 0;
+    const slides = document.querySelectorAll(".slide");
+
+    setInterval(() => {
+        slides[current].classList.remove("active");
+        current = (current + 1) % slides.length;
+        slides[current].classList.add("active");
+    }, 4000);
+</script>
+
 </body>
 </html>
